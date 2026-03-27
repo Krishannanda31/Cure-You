@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/Toast";
 
-const API = "http://localhost:5001/api";
+const API = "https://cure-you-backend-production.up.railway.app/api";
 
 export default function JoinPage() {
   const { showToast } = useToast();
