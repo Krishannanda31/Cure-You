@@ -57,7 +57,19 @@ const healthPackages = [
 
 export default function Home() {
   const [search, setSearch] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 640);
+      setIsTablet(window.innerWidth >= 640 && window.innerWidth < 1024);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +86,7 @@ export default function Home() {
       {/* ── HERO ── */}
       <section style={{
         background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 50%, #1E1B2E 100%)",
-        padding: "60px 24px 80px",
+        padding: isMobile ? "36px 20px 48px" : isTablet ? "48px 24px 60px" : "60px 24px 80px",
         position: "relative",
         overflow: "hidden",
       }}>
@@ -82,7 +94,7 @@ export default function Home() {
         <div style={{ position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%", background: "rgba(108,63,197,0.18)", filter: "blur(60px)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -60, left: -60, width: 260, height: 260, borderRadius: "50%", background: "rgba(110,231,183,0.12)", filter: "blur(50px)", pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 420px", gap: 60, alignItems: "center" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: isMobile || isTablet ? "1fr" : "1fr 420px", gap: isMobile ? 32 : 60, alignItems: "center" }}>
 
           {/* LEFT: headline + search */}
           <div>
@@ -138,8 +150,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* RIGHT: feature cards */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* RIGHT: feature cards — hidden on mobile/tablet */}
+          <div style={{ display: isMobile || isTablet ? "none" : "flex", flexDirection: "column", gap: 14 }}>
             {[
               { icon: "🩺", title: "Consult a Specialist", sub: "224+ verified doctors · Book in 2 mins", color: "#818CF8", bg: "rgba(129,140,248,0.12)", border: "rgba(129,140,248,0.25)", href: "/doctors" },
               { icon: "🧪", title: "Compare Lab Prices", sub: "Same test, different price — we show all", color: "#6EE7B7", bg: "rgba(110,231,183,0.1)", border: "rgba(110,231,183,0.25)", href: "/diagnostics" },
@@ -179,26 +191,26 @@ export default function Home() {
       </section>
 
       {/* ── WHAT DO YOU NEED TODAY? ── */}
-      <section style={{ padding: "64px 24px 48px", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ marginBottom: 36 }}>
-          <h2 style={{ fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 800, color: "#1E1B2E", marginBottom: 8 }}>
+      <section style={{ padding: isMobile ? "36px 16px 32px" : "64px 24px 48px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ marginBottom: isMobile ? 24 : 36 }}>
+          <h2 style={{ fontSize: "clamp(20px, 3vw, 32px)", fontWeight: 800, color: "#1E1B2E", marginBottom: 8 }}>
             What do you need today?
           </h2>
           <p style={{ color: "#6B7280", fontSize: 15 }}>All your health services, right here</p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16, alignItems: "stretch" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : isTablet ? "repeat(3, 1fr)" : "repeat(6, 1fr)", gap: isMobile ? 10 : 16, alignItems: "stretch" }}>
           {categories.map(cat => (
             <Link key={cat.href + cat.title} href={cat.href} style={{ textDecoration: "none", display: "flex" }}>
               <div
                 className="card-hover"
-                style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: "24px 16px", textAlign: "center", cursor: "pointer", flex: 1 }}
+                style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: isMobile ? 12 : 16, padding: isMobile ? "16px 8px" : "24px 16px", textAlign: "center", cursor: "pointer", flex: 1 }}
               >
-                <div style={{ width: 56, height: 56, borderRadius: 16, background: cat.bg, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", fontSize: 26 }}>
+                <div style={{ width: isMobile ? 44 : 56, height: isMobile ? 44 : 56, borderRadius: isMobile ? 12 : 16, background: cat.bg, display: "flex", alignItems: "center", justifyContent: "center", margin: isMobile ? "0 auto 10px" : "0 auto 14px", fontSize: isMobile ? 20 : 26 }}>
                   {cat.icon}
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#1E1B2E", marginBottom: 4 }}>{cat.title}</div>
-                <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.4 }}>{cat.subtitle}</div>
+                <div style={{ fontSize: isMobile ? 11 : 15, fontWeight: 700, color: "#1E1B2E", marginBottom: 3 }}>{cat.title}</div>
+                {!isMobile && <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.4 }}>{cat.subtitle}</div>}
               </div>
             </Link>
           ))}
@@ -206,7 +218,7 @@ export default function Home() {
       </section>
 
       {/* ── PROMO BANNERS ── */}
-      <section style={{ padding: "0 24px 56px", maxWidth: 1200, margin: "0 auto" }}>
+      <section style={{ padding: isMobile ? "0 16px 40px" : "0 24px 56px", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
           {promoBanners.map(b => (
             <Link key={b.title} href={b.href} style={{ textDecoration: "none" }}>
@@ -234,7 +246,7 @@ export default function Home() {
       </section>
 
       {/* ── POPULAR HEALTH PACKAGES ── */}
-      <section style={{ padding: "0 24px 64px", maxWidth: 1200, margin: "0 auto" }}>
+      <section style={{ padding: isMobile ? "0 16px 48px" : "0 24px 64px", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
           <div>
             <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 800, color: "#1E1B2E", marginBottom: 4 }}>
@@ -280,8 +292,8 @@ export default function Home() {
       </section>
 
       {/* ── KITNA LIYA? PRICE ALERT BANNER ── */}
-      <section style={{ padding: "0 24px 64px", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 60%, #1E1B2E 100%)", borderRadius: 20, padding: "36px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 24, position: "relative", overflow: "hidden" }}>
+      <section style={{ padding: isMobile ? "0 16px 48px" : "0 24px 64px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 60%, #1E1B2E 100%)", borderRadius: isMobile ? 16 : 20, padding: isMobile ? "24px 20px" : "36px 40px", display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -40, right: 80, width: 200, height: 200, borderRadius: "50%", background: "rgba(108,63,197,0.2)", filter: "blur(40px)", pointerEvents: "none" }} />
           <div style={{ position: "relative" }}>
             <div style={{ display: "inline-block", background: "rgba(110,231,183,0.15)", border: "1px solid rgba(110,231,183,0.3)", borderRadius: 999, padding: "4px 14px", marginBottom: 12 }}>
@@ -304,8 +316,8 @@ export default function Home() {
       </section>
 
       {/* ── PROVIDER CTA ── */}
-      <section style={{ padding: "0 24px 64px", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ background: "linear-gradient(135deg, #EDE9FE 0%, #F8F7FF 100%)", border: "1.5px solid #E5E0FF", borderRadius: 20, padding: "48px 40px", textAlign: "center" }}>
+      <section style={{ padding: isMobile ? "0 16px 48px" : "0 24px 64px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ background: "linear-gradient(135deg, #EDE9FE 0%, #F8F7FF 100%)", border: "1.5px solid #E5E0FF", borderRadius: isMobile ? 16 : 20, padding: isMobile ? "32px 20px" : "48px 40px", textAlign: "center" }}>
           <div style={{ fontSize: 40, marginBottom: 16 }}>🏥</div>
           <h2 style={{ fontSize: "clamp(20px, 3vw, 30px)", fontWeight: 800, color: "#1E1B2E", marginBottom: 12 }}>
             Are you a doctor, lab, or hospital in Faridabad?

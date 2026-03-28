@@ -39,6 +39,18 @@ export default function DiagnosticsPage() {
   const [locationGranted, setLocationGranted] = useState(false);
   const [whyExpanded, setWhyExpanded] = useState(false);
   const [nablTooltipId, setNablTooltipId] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 640);
+      setIsTablet(window.innerWidth >= 640 && window.innerWidth < 1024);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const search = async (q: string) => {
     if (!q.trim()) return;
@@ -70,8 +82,8 @@ export default function DiagnosticsPage() {
         padding: "32px 0 28px",
         boxShadow: "0 2px 12px rgba(108,63,197,0.06)",
       }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#1E1B2E", margin: "0 0 6px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 16px" : "0 24px" }}>
+          <h1 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 800, color: "#1E1B2E", margin: "0 0 6px" }}>
             Book Lab Tests
           </h1>
           <p style={{ color: "#6B7280", fontSize: 14, margin: "0 0 24px" }}>
@@ -79,7 +91,7 @@ export default function DiagnosticsPage() {
           </p>
 
           {/* Search bar */}
-          <div style={{ display: "flex", gap: 10, maxWidth: 640 }}>
+          <div style={{ display: "flex", gap: 10, maxWidth: 640, flexDirection: isMobile ? "column" : "row" }}>
             <div style={{ position: "relative", flex: 1 }}>
               <span style={{
                 position: "absolute", left: 16, top: "50%",
@@ -152,7 +164,7 @@ export default function DiagnosticsPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px 48px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: isMobile ? "24px 16px 40px" : "32px 24px 48px" }}>
         {/* Popular tests horizontal scroll */}
         <div style={{ marginBottom: 40 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: "#1E1B2E", marginBottom: 16 }}>
@@ -234,11 +246,11 @@ export default function DiagnosticsPage() {
         {searched && !loading && results.length > 1 && (
           <div style={{
             background: "linear-gradient(135deg, #1E1B2E, #2d1b5e)",
-            borderRadius: 18, padding: "24px 28px",
+            borderRadius: isMobile ? 14 : 18, padding: isMobile ? "18px 18px" : "24px 28px",
             marginBottom: 20,
-            display: "flex", alignItems: "center",
+            display: "flex", alignItems: isMobile ? "flex-start" : "center",
             justifyContent: "space-between",
-            flexWrap: "wrap", gap: 20,
+            flexWrap: "wrap", gap: 16,
           }}>
             <div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginBottom: 6, fontWeight: 600, letterSpacing: "0.04em" }}>
@@ -369,10 +381,10 @@ export default function DiagnosticsPage() {
                     </div>
                   )}
 
-                  <div style={{ display: "flex", overflow: "hidden" }}>
+                  <div style={{ display: "flex", overflow: "hidden", flexDirection: isMobile ? "column" : "row" }}>
                     {/* Lab icon */}
                     <div style={{
-                      width: 80, minWidth: 80,
+                      width: isMobile ? "100%" : 80, minWidth: isMobile ? undefined : 80, height: isMobile ? 64 : undefined,
                       background: i === 0 ? "linear-gradient(135deg, #dcfce7, #a7f3d0)" : "linear-gradient(135deg, #ede9fe, #ddd6fe)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
@@ -381,10 +393,11 @@ export default function DiagnosticsPage() {
 
                     {/* Main content */}
                     <div style={{
-                      flex: 1, padding: "18px 20px",
-                      display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap",
+                      flex: 1, padding: isMobile ? "14px 16px" : "18px 20px",
+                      display: "flex", alignItems: isMobile ? "flex-start" : "center", gap: 12, flexWrap: "wrap",
+                      flexDirection: isMobile ? "column" : "row",
                     }}>
-                      <div style={{ flex: 1, minWidth: 180 }}>
+                      <div style={{ flex: 1, minWidth: isMobile ? "100%" : 180 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 5 }}>
                           <span style={{ fontWeight: 800, fontSize: 16, color: "#1E1B2E" }}>{r.lab_name}</span>
                           {r.nabl_certified ? (
@@ -451,7 +464,7 @@ export default function DiagnosticsPage() {
                       </div>
 
                       {/* Price + Book */}
-                      <div style={{ textAlign: "right", minWidth: 130 }}>
+                      <div style={{ textAlign: isMobile ? "left" : "right", minWidth: isMobile ? "100%" : 130, display: "flex", flexDirection: isMobile ? "row" : "column", alignItems: isMobile ? "center" : "flex-end", justifyContent: isMobile ? "space-between" : undefined }}>
                         <div style={{
                           fontSize: 30, fontWeight: 800, lineHeight: 1,
                           color: i === 0 ? "#059669" : "#1E1B2E",
@@ -493,8 +506,8 @@ export default function DiagnosticsPage() {
           <>
             {/* Why Compare? Stats Bar */}
             <div style={{
-              display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 16, marginBottom: 40,
+              display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+              gap: isMobile ? 10 : 16, marginBottom: isMobile ? 28 : 40,
             }}>
               {[
                 { emoji: "🧪", value: "500+", label: "Tests Available", color: "#6C3FC5", bg: "#EDE9FE" },
@@ -594,7 +607,7 @@ export default function DiagnosticsPage() {
               <div style={{ fontSize: 18, fontWeight: 800, color: "#1E1B2E", marginBottom: 20 }}>
                 How CureYou Lab Comparison Works
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 16 : 20 }}>
                 {[
                   { step: "1", emoji: "🔍", title: "Search Your Test", desc: "Type CBC, HbA1c, Thyroid, Vitamin D or any test above. We search all Faridabad labs instantly." },
                   { step: "2", emoji: "📊", title: "Compare All Labs", desc: "See every certified lab's price side by side, with ratings, location, turnaround time, and NABL status." },

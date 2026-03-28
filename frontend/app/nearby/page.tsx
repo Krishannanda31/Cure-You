@@ -237,9 +237,9 @@ export default function NearbyPage() {
         </div>
 
         {/* Quick suggestions */}
-        <div style={{ padding: isMobile ? "0 16px 10px" : "0 40px 10px", display: "flex", gap: 8, flexWrap: "wrap", maxWidth: 860, width: "100%", margin: "0 auto", alignSelf: "stretch", flexShrink: 0 }}>
-          {["Nearest pharmacy open now", "I have chest pain", "Blood bank near me", "Home nurse needed", "Nearest lab test"].map(q => (
-            <button key={q} onClick={() => setInput(q)} style={{ padding: "6px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}>
+        <div style={{ padding: isMobile ? "0 16px 10px" : "0 40px 10px", display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", maxWidth: 860, width: "100%", margin: "0 auto", alignSelf: "stretch", flexShrink: 0 }}>
+          {["Nearest pharmacy", "Chest pain help", "Blood bank", "Home nurse", "Lab test"].map(q => (
+            <button key={q} onClick={() => setInput(q)} style={{ padding: "6px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600, cursor: "pointer", transition: "all 0.15s", whiteSpace: "nowrap", flexShrink: 0 }}>
               {q}
             </button>
           ))}
@@ -258,7 +258,7 @@ export default function NearbyPage() {
       </div>
 
       {/* ── BELOW HERO: all services ── */}
-      <div style={{ maxWidth: 1440, margin: "0 auto", padding: isMobile ? "16px 16px" : "28px 32px" }}>
+      <div style={{ maxWidth: 1440, margin: "0 auto", padding: isMobile ? "16px 14px" : "28px 32px" }}>
 
         {/* Payment Modal */}
         {payModal && (

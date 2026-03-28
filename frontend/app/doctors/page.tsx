@@ -50,6 +50,15 @@ export default function DoctorsPage() {
   const [feeFilter, setFeeFilter] = useState<FeeFilter>("any");
   const [ratingFilter, setRatingFilter] = useState<RatingFilter>("any");
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     fetch(`${API}/doctors/specialities`)
@@ -133,26 +142,43 @@ export default function DoctorsPage() {
 
       {/* Top header bar */}
       <div style={{ background: "white", borderBottom: "1px solid #E5E0FF", padding: "18px 0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: "#1E1B2E", margin: 0 }}>
-            Doctors in Faridabad
-          </h1>
-          <p style={{ color: "#6B7280", margin: "4px 0 0", fontSize: 14 }}>
-            Verified credentials · Real fees · Real availability
-          </p>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? "0 16px" : "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h1 style={{ fontSize: isMobile ? 22 : 26, fontWeight: 800, color: "#1E1B2E", margin: 0 }}>
+              Doctors in Faridabad
+            </h1>
+            <p style={{ color: "#6B7280", margin: "4px 0 0", fontSize: 14 }}>
+              Verified credentials · Real fees · Real availability
+            </p>
+          </div>
+          {isMobile && (
+            <button
+              onClick={() => setShowFilters(f => !f)}
+              style={{
+                background: showFilters ? "#6C3FC5" : "white",
+                color: showFilters ? "white" : "#6C3FC5",
+                border: "1.5px solid #6C3FC5",
+                borderRadius: 10, padding: "9px 18px",
+                fontWeight: 700, fontSize: 13, cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6,
+              }}
+            >
+              🔧 {showFilters ? "Hide Filters" : "Filters"}{anyFilterActive ? " •" : ""}
+            </button>
+          )}
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 24px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? "16px 16px" : "28px 24px" }}>
         <div
           className="page-grid"
-          style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 24 }}
+          style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "280px 1fr", gap: 24 }}
         >
           {/* LEFT SIDEBAR */}
           <aside
             className="sidebar"
             style={{
-              position: "sticky",
+              position: isMobile ? "static" : "sticky",
               top: 24,
               alignSelf: "start",
               background: "white",
@@ -160,6 +186,7 @@ export default function DoctorsPage() {
               borderRadius: 14,
               padding: 20,
               height: "fit-content",
+              display: isMobile && !showFilters ? "none" : "block",
             }}
           >
             {/* Filters heading */}
@@ -374,21 +401,21 @@ export default function DoctorsPage() {
                       padding: 20,
                     }}
                   >
-                    <div style={{ display: "flex", gap: 18 }}>
+                    <div style={{ display: "flex", gap: isMobile ? 12 : 18 }}>
                       {/* Photo */}
                       <div style={{ flexShrink: 0 }}>
                         <img
                           src={getDoctorPhoto(d.id, d.name)}
-                          width={80}
-                          height={80}
+                          width={isMobile ? 60 : 80}
+                          height={isMobile ? 60 : 80}
                           alt={d.name}
                           onError={(e) => {
                             (e.currentTarget as HTMLImageElement).style.display = "none";
                           }}
                           style={{
-                            width: 80,
-                            height: 80,
-                            borderRadius: 14,
+                            width: isMobile ? 60 : 80,
+                            height: isMobile ? 60 : 80,
+                            borderRadius: 12,
                             objectFit: "cover",
                             display: "block",
                             border: "2px solid #E5E0FF",

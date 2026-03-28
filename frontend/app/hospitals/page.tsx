@@ -22,6 +22,14 @@ export default function HospitalsPage() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -64,9 +72,9 @@ export default function HospitalsPage() {
         position: "sticky", top: 0, zIndex: 10,
         boxShadow: "0 2px 12px rgba(108,63,197,0.06)",
       }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? "0 16px" : "0 24px" }}>
           <div style={{ marginBottom: 20 }}>
-            <h1 style={{ fontSize: 26, fontWeight: 800, color: "#1E1B2E", margin: 0, lineHeight: 1.2 }}>
+            <h1 style={{ fontSize: isMobile ? 22 : 26, fontWeight: 800, color: "#1E1B2E", margin: 0, lineHeight: 1.2 }}>
               Hospitals in Faridabad
             </h1>
             <p style={{ color: "#6B7280", fontSize: 13, margin: "4px 0 0" }}>
@@ -75,8 +83,8 @@ export default function HospitalsPage() {
           </div>
 
           {/* Search + Filter */}
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", paddingBottom: 16 }}>
-            <div style={{ position: "relative", flex: 1, minWidth: 260 }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", paddingBottom: 16, flexDirection: isMobile ? "column" : "row" }}>
+            <div style={{ position: "relative", flex: 1, minWidth: isMobile ? "100%" : 260, width: isMobile ? "100%" : undefined }}>
               <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, pointerEvents: "none" }}>🔍</span>
               <input
                 value={search}
@@ -117,7 +125,7 @@ export default function HospitalsPage() {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px 48px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? "0 16px 40px" : "0 24px 48px" }}>
         {loading ? (
           <div style={{ textAlign: "center", padding: 80, color: "#6B7280", fontSize: 15 }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>🏥</div>
@@ -135,8 +143,8 @@ export default function HospitalsPage() {
             </div>
             <div style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-              gap: 20,
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: isMobile ? 14 : 20,
             }}>
               {hospitals.map(h => {
                 const color = typeColor(h.type);
