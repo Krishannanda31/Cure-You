@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/components/AuthContext";
 import { ToastProvider } from "@/components/Toast";
+import { LocationProvider } from "../components/LocationContext";
 
 export const metadata: Metadata = {
   title: "CureYou — Your Health. Handled.",
@@ -20,10 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuthProvider>
           <ToastProvider>
-            <Navbar />
-            <main style={{ minHeight: "100vh", paddingTop: "64px" }}>
-              {children}
-            </main>
+            <LocationProvider>
+              <Navbar />
+              <main style={{ minHeight: "100vh", paddingTop: "64px" }}>
+                {children}
+              </main>
+            </LocationProvider>
           </ToastProvider>
         </AuthProvider>
       </body>
