@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 import { useToast } from "@/components/Toast";
 
-const API = "https://cure-you-backend-production.up.railway.app/api";
+const API = "/api";
 interface Doctor { id: number; name: string; speciality: string; area: string; fee: number; rating: number; reviews: number; experience: number; hospital: string; verified: number; image_initials: string; education: string; languages: string; available_today: number; }
 interface Slot { time: string; available: boolean; }
 

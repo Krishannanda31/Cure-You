@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-const API = "https://cure-you-backend-production.up.railway.app/api";
+const API = "/api";
 
 interface User {
   id: number; name: string; email: string; phone?: string;

@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 
-const API = "https://cure-you-backend-production.up.railway.app/api";
+const API = "/api";
 
 interface SearchResults {
   query: string; total: number;

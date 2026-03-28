@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 
-const API = "https://cure-you-backend-production.up.railway.app/api";
+const API = "/api";
 
 interface Doctor {
   id: number;

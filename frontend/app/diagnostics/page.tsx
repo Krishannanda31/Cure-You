@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const API = "https://cure-you-backend-production.up.railway.app/api";
+const API = "/api";
 
 interface TestResult {
   lab_id: number; lab_name: string; area: string; price: number;

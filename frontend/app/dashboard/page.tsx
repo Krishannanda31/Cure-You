@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import { useToast } from "@/components/Toast";
 
-const API = "https://cure-you-backend-production.up.railway.app/api";
+const API = "/api";
 
 interface Booking { id: number; booking_type: string; reference_name: string; test_name: string; booking_date: string; booking_time: string; status: string; amount: number; }
 interface HealthRecord { id: number; record_type: string; title: string; test_name: string; lab_name: string; record_date: string; }
