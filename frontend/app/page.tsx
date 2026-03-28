@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const quickSearchPills = ["CBC test", "Cardiologist", "Paracetamol generic", "Blood bank"];
