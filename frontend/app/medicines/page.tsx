@@ -240,6 +240,17 @@ export default function MedicinesPage() {
   // Payment modal state
   const [payPharmacy, setPayPharmacy] = useState<Pharmacy | null>(null);
 
+  // Mobile state
+  const [isMobile, setIsMobile] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   useEffect(() => {
     fetch(`${API}/medicines/categories`).then(r => r.json()).then(setCategories);
   }, []);
@@ -293,23 +304,40 @@ export default function MedicinesPage() {
       <div style={{
         background: "white",
         borderBottom: "1px solid #E5E0FF",
-        padding: "0 24px",
+        padding: isMobile ? "12px 16px" : "0 24px",
         display: "flex",
         alignItems: "center",
-        gap: 20,
-        height: 64,
+        gap: isMobile ? 10 : 20,
+        flexWrap: isMobile ? "wrap" : "nowrap",
+        minHeight: 64,
         position: "sticky",
         top: 0,
         zIndex: 100,
         boxShadow: "0 1px 4px rgba(108,63,197,0.06)"
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, flex: isMobile ? 1 : "none" }}>
           <span style={{ fontSize: 22 }}>💊</span>
           <span style={{ fontWeight: 800, fontSize: 18, color: "#1E1B2E" }}>Medicines</span>
         </div>
 
+        {isMobile && (
+          <button
+            onClick={() => setShowSidebar(s => !s)}
+            style={{
+              background: showSidebar ? "#6C3FC5" : "white",
+              color: showSidebar ? "white" : "#6C3FC5",
+              border: "1.5px solid #6C3FC5",
+              borderRadius: 8, padding: "7px 14px",
+              fontWeight: 700, fontSize: 12, cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            {showSidebar ? "Hide" : "🗂 Category"}
+          </button>
+        )}
+
         {/* SEARCH BAR */}
-        <div style={{ flex: 1, maxWidth: 600, position: "relative" }}>
+        <div style={{ flex: 1, maxWidth: isMobile ? "100%" : 600, position: "relative", width: isMobile ? "100%" : undefined }}>
           <span style={{
             position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)",
             fontSize: 16, color: "#9CA3AF", pointerEvents: "none"
@@ -337,17 +365,19 @@ export default function MedicinesPage() {
       </div>
 
       {/* BODY: SIDEBAR + MAIN */}
-      <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, minHeight: "calc(100vh - 64px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "240px 1fr", gap: 0, minHeight: "calc(100vh - 64px)" }}>
 
         {/* LEFT SIDEBAR */}
         <aside style={{
           background: "white",
           borderRight: "1px solid #E5E0FF",
-          position: "sticky",
+          borderBottom: isMobile ? "1px solid #E5E0FF" : "none",
+          position: isMobile ? "static" : "sticky",
           top: 64,
-          height: "calc(100vh - 64px)",
-          overflowY: "auto",
+          height: isMobile ? "auto" : "calc(100vh - 64px)",
+          overflowY: isMobile ? "visible" : "auto",
           padding: "20px 0",
+          display: isMobile && !showSidebar ? "none" : "block",
         }}>
           <div style={{ padding: "0 16px 12px", fontSize: 11, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.08em", textTransform: "uppercase" }}>
             Shop by Category
@@ -428,7 +458,7 @@ export default function MedicinesPage() {
         </aside>
 
         {/* RIGHT MAIN CONTENT */}
-        <main style={{ padding: "24px 28px", minWidth: 0 }}>
+        <main style={{ padding: isMobile ? "16px 14px" : "24px 28px", minWidth: 0 }}>
 
           {/* ── TWO TABS ─────────────────────────────────────── */}
           <div style={{
@@ -494,14 +524,15 @@ export default function MedicinesPage() {
               <div style={{
                 background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 60%, #3b1f7a 100%)",
                 borderRadius: 14,
-                padding: "16px 22px",
+                padding: isMobile ? "14px 16px" : "16px 22px",
                 marginBottom: 24,
                 display: "flex",
-                alignItems: "center",
-                gap: 14,
+                alignItems: isMobile ? "flex-start" : "center",
+                gap: 12,
+                flexWrap: "wrap",
               }}>
                 <span style={{ fontSize: 28, flexShrink: 0 }}>💡</span>
-                <div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ color: "white", fontWeight: 700, fontSize: 14, marginBottom: 2 }}>
                     Generic = Same molecule, huge savings
                   </div>
@@ -509,7 +540,7 @@ export default function MedicinesPage() {
                     Generics are chemically identical to branded drugs. Jan Aushadhi stores offer even deeper discounts.
                   </div>
                 </div>
-                <div style={{ marginLeft: "auto", flexShrink: 0, textAlign: "right" }}>
+                <div style={{ flexShrink: 0, textAlign: isMobile ? "left" : "right" }}>
                   <div style={{ color: "#6EE7B7", fontWeight: 800, fontSize: 20 }}>Up to 90%</div>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11 }}>cheaper</div>
                 </div>
@@ -519,8 +550,8 @@ export default function MedicinesPage() {
               {loading ? (
                 <div style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                  gap: 16
+                  gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(auto-fill, minmax(220px, 1fr))",
+                  gap: isMobile ? 10 : 16
                 }}>
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div key={i} style={{
@@ -539,8 +570,8 @@ export default function MedicinesPage() {
               ) : (
                 <div style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                  gap: 16
+                  gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(auto-fill, minmax(220px, 1fr))",
+                  gap: isMobile ? 10 : 16
                 }}>
                   {medicines.map(m => {
                     const meta = getCategoryMeta(m.category);
@@ -819,7 +850,7 @@ export default function MedicinesPage() {
 
                 <div style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                  gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(240px, 1fr))",
                   gap: 12,
                 }}>
                   {DISCOUNT_OFFERS.map((offer, i) => (
@@ -873,8 +904,8 @@ export default function MedicinesPage() {
                 {pharmLoading ? (
                   <div style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                    gap: 16,
+                    gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: isMobile ? 12 : 16,
                   }}>
                     {Array.from({ length: 6 }).map((_, i) => (
                       <div key={i} style={{
@@ -902,8 +933,8 @@ export default function MedicinesPage() {
                 ) : (
                   <div style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                    gap: 16,
+                    gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: isMobile ? 12 : 16,
                   }}>
                     {pharmacies.map((ph, idx) => {
                       const discountLabel = CHEMIST_DISCOUNTS[idx % CHEMIST_DISCOUNTS.length];
