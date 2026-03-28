@@ -175,7 +175,7 @@ export default function NearbyPage() {
       const data = await r.json();
       setMessages([...newMessages, { role: "assistant", content: data.reply || data.error }]);
     } catch {
-      setMessages([...newMessages, { role: "assistant", content: "Sorry, AI service is unavailable right now. Please add your ANTHROPIC_API_KEY to backend/.env to enable AI." }]);
+      setMessages([...newMessages, { role: "assistant", content: "AI service se connect nahi ho pa raha. Thodi der baad dobara try karein. 🙏" }]);
     }
     setAiLoading(false);
   };

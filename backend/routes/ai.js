@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Groq = require('groq-sdk');
 
-const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 const SYSTEM_PROMPT = `You are CureYou AI, a health assistant exclusively for patients in Faridabad, India. You ONLY answer health-related questions.
 
 You help users with:
@@ -32,6 +30,8 @@ router.post('/chat', async (req, res) => {
   if (!process.env.GROQ_API_KEY) {
     return res.json({ reply: 'CureYou AI is not configured yet. Please add your GROQ_API_KEY to Railway environment variables.' });
   }
+
+  const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   try {
     const messages = [
