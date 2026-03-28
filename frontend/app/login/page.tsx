@@ -27,8 +27,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 100%)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <div style={{ background: "white", borderRadius: 20, padding: "40px 36px", width: "100%", maxWidth: 420, boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 100%)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px 16px" }}>
+      <div style={{ background: "white", borderRadius: 20, padding: "40px 28px", width: "100%", maxWidth: 420, boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, #6C3FC5, #818CF8)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 20, margin: "0 auto 16px" }}>C</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1E1B2E", marginBottom: 6 }}>Welcome back</h1>
@@ -39,12 +39,12 @@ export default function LoginPage() {
           <div>
             <label style={{ fontSize: 13, fontWeight: 600, color: "#1E1B2E", display: "block", marginBottom: 6 }}>Email</label>
             <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required placeholder="you@example.com"
-              style={{ width: "100%", padding: "12px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" }} />
+              style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" }} />
           </div>
           <div>
             <label style={{ fontSize: 13, fontWeight: 600, color: "#1E1B2E", display: "block", marginBottom: 6 }}>Password</label>
             <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required placeholder="••••••••"
-              style={{ width: "100%", padding: "12px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" }} />
+              style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" }} />
           </div>
 
           <button type="submit" disabled={loading} style={{ padding: "14px", background: loading ? "#9CA3AF" : "linear-gradient(135deg, #6C3FC5, #818CF8)", color: "white", border: "none", borderRadius: 10, fontWeight: 700, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", marginTop: 4 }}>

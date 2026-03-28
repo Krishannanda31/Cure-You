@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
@@ -11,6 +11,14 @@ export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", area: "", blood_group: "", gender: "" });
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm({ ...form, [k]: e.target.value });
 
@@ -28,12 +36,12 @@ export default function RegisterPage() {
     }
   };
 
-  const inputStyle = { width: "100%", padding: "11px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" };
+  const inputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "11px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" };
   const labelStyle: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: "#1E1B2E", display: "block", marginBottom: 5 };
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 100%)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <div style={{ background: "white", borderRadius: 20, padding: "40px 36px", width: "100%", maxWidth: 480, boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #1E1B2E 0%, #2d1b5e 100%)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px 16px" }}>
+      <div style={{ background: "white", borderRadius: 20, padding: isMobile ? "28px 20px" : "40px 36px", width: "100%", maxWidth: 480, boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, #6C3FC5, #818CF8)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 20, margin: "0 auto 16px" }}>C</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1E1B2E", marginBottom: 6 }}>Join CureYou</h1>
@@ -41,7 +49,7 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
             <div>
               <label style={labelStyle}>Full Name *</label>
               <input value={form.name} onChange={set("name")} required placeholder="Aap ka naam" style={inputStyle} />
@@ -59,7 +67,7 @@ export default function RegisterPage() {
             <label style={labelStyle}>Password *</label>
             <input type="password" value={form.password} onChange={set("password")} required placeholder="Min 6 characters" style={inputStyle} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr", gap: 14 }}>
             <div>
               <label style={labelStyle}>Area</label>
               <input value={form.area} onChange={set("area")} placeholder="Sector 16..." style={inputStyle} />
@@ -71,7 +79,7 @@ export default function RegisterPage() {
                 {["A+","A-","B+","B-","O+","O-","AB+","AB-"].map(b => <option key={b} value={b}>{b}</option>)}
               </select>
             </div>
-            <div>
+            <div style={isMobile ? { gridColumn: "1 / -1" } : {}}>
               <label style={labelStyle}>Gender</label>
               <select value={form.gender} onChange={set("gender")} style={inputStyle}>
                 <option value="">Select</option>

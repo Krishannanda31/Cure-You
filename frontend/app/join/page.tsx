@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/Toast";
 
 const API = "/api";
@@ -9,6 +9,14 @@ export default function JoinPage() {
   const [form, setForm] = useState({ provider_type: "lab", name: "", contact_person: "", email: "", phone: "", address: "", area: "", registration_number: "", accreditation: "" });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm({ ...form, [k]: e.target.value });
 
@@ -26,12 +34,12 @@ export default function JoinPage() {
     } finally { setLoading(false); }
   };
 
-  const inputStyle = { width: "100%", padding: "11px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" };
+  const inputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "11px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", background: "#F8F7FF" };
   const labelStyle: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: "#1E1B2E", display: "block", marginBottom: 5 };
 
   if (submitted) return (
-    <div style={{ maxWidth: 560, margin: "80px auto", padding: 24, textAlign: "center" }}>
-      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: "48px 40px" }}>
+    <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 16px", textAlign: "center" }}>
+      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: isMobile ? "36px 24px" : "48px 40px" }}>
         <div style={{ fontSize: 60, marginBottom: 20 }}>🎉</div>
         <h2 style={{ fontSize: 24, fontWeight: 800, color: "#1E1B2E", marginBottom: 12 }}>Registration Submitted!</h2>
         <p style={{ color: "#6B7280", lineHeight: 1.7, marginBottom: 24 }}>Our team will verify your credentials and activate your CureYou profile within <strong>24 hours</strong>. You&apos;ll receive a confirmation on your email.</p>
@@ -46,29 +54,29 @@ export default function JoinPage() {
   );
 
   return (
-    <div style={{ maxWidth: 700, margin: "0 auto", padding: "40px 24px" }}>
-      <div style={{ marginBottom: 36, textAlign: "center" }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: "#1E1B2E", marginBottom: 10 }}>Join CureYou as a Provider</h1>
-        <p style={{ color: "#6B7280", fontSize: 16 }}>Free listing. Zero upfront cost. Start getting patients today.</p>
+    <div style={{ maxWidth: 700, margin: "0 auto", padding: isMobile ? "24px 16px" : "40px 24px" }}>
+      <div style={{ marginBottom: 32, textAlign: "center" }}>
+        <h1 style={{ fontSize: isMobile ? 26 : 32, fontWeight: 800, color: "#1E1B2E", marginBottom: 10 }}>Join CureYou as a Provider</h1>
+        <p style={{ color: "#6B7280", fontSize: 15 }}>Free listing. Zero upfront cost. Start getting patients today.</p>
       </div>
 
       {/* Benefits */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 36 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 32 }}>
         {[
           ["🆓", "Free Listing", "No setup fee. No monthly charge to list."],
           ["✓", "Verified Badge", "CureYou Verified — builds patient trust instantly."],
           ["📊", "Analytics", "See who's viewing your profile and where they come from."],
           ["📅", "Direct Bookings", "Patients book directly through CureYou — you get notified."],
         ].map(([icon, title, desc]) => (
-          <div key={title} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "18px 16px", textAlign: "center" }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>{icon}</div>
-            <div style={{ fontWeight: 700, fontSize: 14, color: "#1E1B2E", marginBottom: 4 }}>{title}</div>
-            <div style={{ fontSize: 12, color: "#6B7280" }}>{desc}</div>
+          <div key={title} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: isMobile ? "14px 12px" : "18px 16px", textAlign: "center" }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
+            <div style={{ fontWeight: 700, fontSize: isMobile ? 13 : 14, color: "#1E1B2E", marginBottom: 4 }}>{title}</div>
+            <div style={{ fontSize: 11, color: "#6B7280" }}>{desc}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: "32px 28px" }}>
+      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: isMobile ? "24px 18px" : "32px 28px" }}>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div>
             <label style={labelStyle}>Provider Type *</label>
@@ -80,7 +88,7 @@ export default function JoinPage() {
             </select>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Name of {form.provider_type === "doctor" ? "Doctor/Clinic" : form.provider_type === "lab" ? "Lab" : "Provider"} *</label>
               <input value={form.name} onChange={set("name")} required placeholder={form.provider_type === "lab" ? "e.g. City Diagnostics" : "Dr. Full Name / Clinic Name"} style={inputStyle} />
@@ -91,7 +99,7 @@ export default function JoinPage() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Email *</label>
               <input type="email" value={form.email} onChange={set("email")} required placeholder="contact@yourbusiness.in" style={inputStyle} />
@@ -107,7 +115,7 @@ export default function JoinPage() {
             <input value={form.address} onChange={set("address")} placeholder="Full address with sector/area" style={inputStyle} />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Registration / Licence No.</label>
               <input value={form.registration_number} onChange={set("registration_number")} placeholder={form.provider_type === "doctor" ? "MCI Reg. No." : "NABL / CDSCO No."} style={inputStyle} />

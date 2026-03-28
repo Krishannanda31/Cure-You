@@ -19,6 +19,14 @@ export default function DoctorDetailPage() {
   const [selectedTime, setSelectedTime] = useState("");
   const [notes, setNotes] = useState("");
   const [booking, setBooking] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Get next 7 days
   const dates = Array.from({ length: 7 }, (_, i) => {
@@ -57,26 +65,26 @@ export default function DoctorDetailPage() {
   if (!doctor) return <div style={{ textAlign: "center", padding: 80, color: "#6B7280" }}>Loading...</div>;
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 24px" }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: isMobile ? "16px 14px" : "40px 24px" }}>
       {/* Doctor Header */}
-      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: 32, marginBottom: 24, display: "flex", gap: 24, flexWrap: "wrap" }}>
-        <div style={{ width: 80, height: 80, borderRadius: 20, background: "linear-gradient(135deg, #6C3FC5, #818CF8)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 28, flexShrink: 0 }}>
+      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: isMobile ? "20px 16px" : 32, marginBottom: 20, display: "flex", gap: isMobile ? 16 : 24, flexWrap: "wrap" }}>
+        <div style={{ width: isMobile ? 60 : 80, height: isMobile ? 60 : 80, borderRadius: 20, background: "linear-gradient(135deg, #6C3FC5, #818CF8)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: isMobile ? 22 : 28, flexShrink: 0 }}>
           {doctor.image_initials}
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, flexWrap: "wrap" }}>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1E1B2E" }}>{doctor.name}</h1>
-            {doctor.verified ? <span style={{ background: "rgba(110,231,183,0.15)", color: "#059669", fontSize: 12, padding: "3px 10px", borderRadius: 999, fontWeight: 600 }}>✓ Verified</span> : null}
+            <h1 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 800, color: "#1E1B2E" }}>{doctor.name}</h1>
+            {doctor.verified ? <span style={{ background: "rgba(110,231,183,0.15)", color: "#059669", fontSize: 12, padding: "3px 10px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>✓ Verified</span> : null}
           </div>
-          <div style={{ fontSize: 16, color: "#6C3FC5", fontWeight: 600, marginBottom: 4 }}>{doctor.speciality}</div>
-          <div style={{ fontSize: 14, color: "#6B7280", marginBottom: 8 }}>{doctor.hospital} · {doctor.area}</div>
-          <div style={{ fontSize: 13, color: "#6B7280" }}>🎓 {doctor.education}</div>
+          <div style={{ fontSize: isMobile ? 14 : 16, color: "#6C3FC5", fontWeight: 600, marginBottom: 4 }}>{doctor.speciality}</div>
+          <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 6 }}>{doctor.hospital} · {doctor.area}</div>
+          {doctor.education && <div style={{ fontSize: 13, color: "#6B7280" }}>🎓 {doctor.education}</div>}
           <div style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>🗣️ {doctor.languages}</div>
         </div>
-        <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: isMobile ? 8 : 14, flexWrap: "wrap", width: isMobile ? "100%" : undefined }}>
           {[["₹" + doctor.fee, "Consult Fee", "#6C3FC5"], [doctor.rating + "★", doctor.reviews + " reviews", "#818CF8"], [doctor.experience + " yrs", "Experience", "#059669"]].map(([v, l, c]) => (
-            <div key={l} style={{ textAlign: "center", padding: "16px 18px", background: "#F8F7FF", borderRadius: 14 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: c }}>{v}</div>
+            <div key={l} style={{ textAlign: "center", padding: isMobile ? "12px 14px" : "16px 18px", background: "#F8F7FF", borderRadius: 14, flex: isMobile ? 1 : undefined }}>
+              <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 800, color: c }}>{v}</div>
               <div style={{ fontSize: 11, color: "#6B7280" }}>{l}</div>
             </div>
           ))}
@@ -84,19 +92,19 @@ export default function DoctorDetailPage() {
       </div>
 
       {/* Booking */}
-      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: 32 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1E1B2E", marginBottom: 24 }}>Book an Appointment</h2>
+      <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 20, padding: isMobile ? "20px 16px" : 32 }}>
+        <h2 style={{ fontSize: isMobile ? 18 : 20, fontWeight: 700, color: "#1E1B2E", marginBottom: 24 }}>Book an Appointment</h2>
 
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: "#1E1B2E", marginBottom: 12 }}>Select Date</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {dates.map(d => (
               <button key={d.value} onClick={() => { setSelectedDate(d.value); setSelectedTime(""); }} style={{
-                padding: "10px 16px", borderRadius: 10, border: "1.5px solid",
+                padding: "9px 14px", borderRadius: 10, border: "1.5px solid",
                 borderColor: selectedDate === d.value ? "#6C3FC5" : "#E5E0FF",
                 background: selectedDate === d.value ? "rgba(108,63,197,0.08)" : "white",
                 color: selectedDate === d.value ? "#6C3FC5" : "#6B7280",
-                fontSize: 13, fontWeight: 500, cursor: "pointer"
+                fontSize: isMobile ? 12 : 13, fontWeight: 500, cursor: "pointer"
               }}>{d.label}</button>
             ))}
           </div>
@@ -108,7 +116,7 @@ export default function DoctorDetailPage() {
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {slots.map(s => (
                 <button key={s.time} disabled={!s.available} onClick={() => setSelectedTime(s.time)} style={{
-                  padding: "8px 16px", borderRadius: 8, border: "1.5px solid",
+                  padding: "8px 14px", borderRadius: 8, border: "1.5px solid",
                   borderColor: !s.available ? "#F3F0FF" : selectedTime === s.time ? "#6C3FC5" : "#E5E0FF",
                   background: !s.available ? "#F9F9F9" : selectedTime === s.time ? "rgba(108,63,197,0.08)" : "white",
                   color: !s.available ? "#9CA3AF" : selectedTime === s.time ? "#6C3FC5" : "#1E1B2E",
@@ -123,7 +131,7 @@ export default function DoctorDetailPage() {
         <div style={{ marginBottom: 24 }}>
           <label style={{ fontSize: 14, fontWeight: 600, color: "#1E1B2E", display: "block", marginBottom: 8 }}>Notes (optional)</label>
           <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Describe your symptoms or reason for visit..."
-            style={{ width: "100%", padding: "12px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", resize: "vertical", minHeight: 80, background: "#F8F7FF" }} />
+            style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: "1.5px solid #E5E0FF", borderRadius: 10, fontSize: 14, outline: "none", resize: "vertical", minHeight: 80, background: "#F8F7FF" }} />
         </div>
 
         {selectedDate && selectedTime && (
@@ -136,7 +144,7 @@ export default function DoctorDetailPage() {
 
         <button onClick={handleBook} disabled={booking || !selectedDate || !selectedTime} style={{
           width: "100%", padding: "14px", background: (!selectedDate || !selectedTime || booking) ? "#9CA3AF" : "linear-gradient(135deg, #6C3FC5, #818CF8)",
-          color: "white", border: "none", borderRadius: 12, fontWeight: 700, fontSize: 16, cursor: (!selectedDate || !selectedTime || booking) ? "not-allowed" : "pointer"
+          color: "white", border: "none", borderRadius: 12, fontWeight: 700, fontSize: isMobile ? 15 : 16, cursor: (!selectedDate || !selectedTime || booking) ? "not-allowed" : "pointer"
         }}>
           {!user ? "Login to Book" : booking ? "Confirming..." : selectedDate && selectedTime ? `Confirm Appointment — ₹${doctor.fee}` : "Select Date & Time to Book"}
         </button>

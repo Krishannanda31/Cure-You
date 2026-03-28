@@ -22,6 +22,14 @@ export default function DashboardPage() {
   const [records, setRecords] = useState<HealthRecord[]>([]);
   const [recordSummary, setRecordSummary] = useState<{ total: number } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     if (!token) { router.push("/login"); return; }
@@ -48,19 +56,22 @@ export default function DashboardPage() {
     </div>
   );
 
-  const tabStyle = (t: string) => ({
-    padding: "10px 20px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600,
+  const tabStyle = (t: string): React.CSSProperties => ({
+    padding: isMobile ? "9px 14px" : "10px 20px",
+    borderRadius: 8, border: "none", cursor: "pointer",
+    fontSize: isMobile ? 13 : 14, fontWeight: 600, flexShrink: 0,
     background: tab === t ? "linear-gradient(135deg, #6C3FC5, #818CF8)" : "white",
     color: tab === t ? "white" : "#6B7280",
     transition: "all 0.15s",
-  } as React.CSSProperties);
+    whiteSpace: "nowrap",
+  });
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px" }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: isMobile ? "20px 16px" : "40px 24px" }}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 32, flexWrap: "wrap", gap: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#1E1B2E", marginBottom: 4 }}>
+          <h1 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 800, color: "#1E1B2E", marginBottom: 4 }}>
             Namaste, {user.name.split(" ")[0]} 👋
           </h1>
           <p style={{ color: "#6B7280", fontSize: 14 }}>📍 {user.area || "Faridabad"} {user.blood_group ? `· 🩸 ${user.blood_group}` : ""}</p>
@@ -71,25 +82,25 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16, marginBottom: 32 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(auto-fit, minmax(160px, 1fr))", gap: isMobile ? 10 : 16, marginBottom: 28 }}>
         {[
           { icon: "📅", label: "Total Bookings", value: bookings.length, color: "#6C3FC5" },
           { icon: "✅", label: "Completed", value: bookings.filter(b => b.status === "completed").length, color: "#059669" },
           { icon: "⏳", label: "Upcoming", value: bookings.filter(b => b.status === "pending" || b.status === "confirmed").length, color: "#d97706" },
           { icon: "📋", label: "Health Records", value: recordSummary?.total || 0, color: "#818CF8" },
         ].map(s => (
-          <div key={s.label} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "20px 18px", display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ fontSize: 28 }}>{s.icon}</div>
+          <div key={s.label} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: isMobile ? "14px 12px" : "20px 18px", display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ fontSize: isMobile ? 22 : 28 }}>{s.icon}</div>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: s.color }}>{s.value}</div>
-              <div style={{ fontSize: 12, color: "#6B7280" }}>{s.label}</div>
+              <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 800, color: s.color }}>{s.value}</div>
+              <div style={{ fontSize: isMobile ? 11 : 12, color: "#6B7280" }}>{s.label}</div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 28, flexWrap: "wrap" }}>
+      {/* Tabs — horizontally scrollable on mobile */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 24, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 2 }}>
         {(["overview","bookings","records","profile"] as const).map(t => (
           <button key={t} onClick={() => setTab(t)} style={tabStyle(t)}>
             {{ overview: "Overview", bookings: "My Bookings", records: "Health Records", profile: "Profile" }[t]}
@@ -99,8 +110,8 @@ export default function DashboardPage() {
 
       {/* Overview */}
       {tab === "overview" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, alignItems: "start" }}>
-          <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, alignItems: "start" }}>
+          <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: isMobile ? 18 : 24 }}>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1E1B2E", marginBottom: 16 }}>Recent Bookings</h3>
             {bookings.slice(0, 3).length === 0 ? (
               <div style={{ textAlign: "center", padding: 24, color: "#9CA3AF", fontSize: 14 }}>
@@ -118,7 +129,7 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-          <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: 24 }}>
+          <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: isMobile ? 18 : 24 }}>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1E1B2E", marginBottom: 16 }}>Quick Actions</h3>
             {[
               { href: "/doctors", icon: "🩺", label: "Book a Doctor", desc: "Find specialists in Faridabad" },
@@ -149,9 +160,9 @@ export default function DashboardPage() {
               <Link href="/doctors" style={{ color: "#6C3FC5", fontWeight: 600 }}>Book your first doctor appointment →</Link>
             </div>
           ) : bookings.map(b => (
-            <div key={b.id} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "20px 22px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <div key={b.id} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: isMobile ? "16px 14px" : "20px 22px", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
               <div style={{ fontSize: 28 }}>{b.booking_type === "doctor" ? "🩺" : "🧪"}</div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 15, color: "#1E1B2E", marginBottom: 2 }}>{b.reference_name}</div>
                 {b.test_name && <div style={{ fontSize: 13, color: "#6C3FC5" }}>{b.test_name}</div>}
                 <div style={{ fontSize: 13, color: "#6B7280" }}>📅 {b.booking_date}{b.booking_time ? ` at ${b.booking_time}` : ""}</div>
@@ -176,7 +187,7 @@ export default function DashboardPage() {
               <div style={{ fontSize: 14 }}>Your lab reports, prescriptions, and scans will appear here</div>
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
               {records.map(r => (
                 <div key={r.id} style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: 20 }}>
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -198,9 +209,9 @@ export default function DashboardPage() {
       {/* Profile */}
       {tab === "profile" && (
         <div style={{ maxWidth: 500 }}>
-          <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: 28 }}>
+          <div style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 16, padding: isMobile ? 20 : 28 }}>
             <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 28 }}>
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg, #6C3FC5, #818CF8)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 24 }}>
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg, #6C3FC5, #818CF8)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 24, flexShrink: 0 }}>
                 {user.name.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -214,9 +225,9 @@ export default function DashboardPage() {
               ["🩸 Blood Group", user.blood_group || "Not set"],
               ["⭐ Membership", user.pro_member ? "CureYou Pro" : "Free"],
             ].map(([label, value]) => (
-              <div key={label as string} style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderBottom: "1px solid #F3F0FF", fontSize: 14 }}>
+              <div key={label as string} style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderBottom: "1px solid #F3F0FF", fontSize: 14, gap: 8 }}>
                 <span style={{ color: "#6B7280" }}>{label}</span>
-                <span style={{ fontWeight: 600, color: "#1E1B2E" }}>{value}</span>
+                <span style={{ fontWeight: 600, color: "#1E1B2E", textAlign: "right" }}>{value}</span>
               </div>
             ))}
           </div>

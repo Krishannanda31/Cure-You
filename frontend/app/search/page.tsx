@@ -20,6 +20,14 @@ function SearchContent() {
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const [results, setResults] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const q = searchParams.get("q");
@@ -40,11 +48,11 @@ function SearchContent() {
   };
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px" }}>
-      <form onSubmit={handleSearch} style={{ display: "flex", gap: 8, marginBottom: 40, maxWidth: 620 }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: isMobile ? "20px 14px" : "40px 24px" }}>
+      <form onSubmit={handleSearch} style={{ display: "flex", gap: 8, marginBottom: 36, flexDirection: isMobile ? "column" : "row" }}>
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search doctors, tests, hospitals, medicines..."
-          style={{ flex: 1, padding: "14px 18px", border: "2px solid #E5E0FF", borderRadius: 12, fontSize: 15, outline: "none", background: "white" }} autoFocus />
-        <button type="submit" style={{ background: "linear-gradient(135deg, #6C3FC5, #818CF8)", color: "white", padding: "14px 24px", borderRadius: 12, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 15 }}>Search</button>
+          style={{ flex: 1, padding: "14px 18px", border: "2px solid #E5E0FF", borderRadius: 12, fontSize: 15, outline: "none", background: "white", boxSizing: "border-box", width: "100%" }} autoFocus />
+        <button type="submit" style={{ background: "linear-gradient(135deg, #6C3FC5, #818CF8)", color: "white", padding: "14px 24px", borderRadius: 12, border: "none", fontWeight: 700, cursor: "pointer", fontSize: 15, whiteSpace: "nowrap" }}>Search</button>
       </form>
 
       {loading && <div style={{ textAlign: "center", padding: 60, color: "#6B7280" }}>Searching across all of CureYou...</div>}
@@ -58,7 +66,7 @@ function SearchContent() {
           {results.doctors.length > 0 && (
             <div style={{ marginBottom: 36 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1E1B2E", marginBottom: 14 }}>🩺 Doctors ({results.doctors.length})</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
                 {results.doctors.map(d => (
                   <Link key={d.id} href={`/doctors/${d.id}`} style={{ textDecoration: "none" }}>
                     <div className="card-hover" style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "16px 18px" }}>
@@ -81,12 +89,12 @@ function SearchContent() {
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {results.tests.map(t => (
                   <Link key={t.test_name} href={`/diagnostics?test=${encodeURIComponent(t.test_name)}`} style={{ textDecoration: "none" }}>
-                    <div className="card-hover" style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div className="card-hover" style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                       <div>
                         <div style={{ fontWeight: 700, color: "#1E1B2E" }}>{t.test_name}</div>
                         <div style={{ fontSize: 13, color: "#6B7280" }}>Available at {t.lab_count} labs · {t.test_category}</div>
                       </div>
-                      <div style={{ textAlign: "right" }}>
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
                         <div style={{ fontSize: 16, fontWeight: 800, color: "#059669" }}>₹{t.min_price}</div>
                         <div style={{ fontSize: 11, color: "#6B7280" }}>cheapest</div>
                       </div>
@@ -100,7 +108,7 @@ function SearchContent() {
           {results.hospitals.length > 0 && (
             <div style={{ marginBottom: 36 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1E1B2E", marginBottom: 14 }}>🏥 Hospitals ({results.hospitals.length})</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
                 {results.hospitals.map(h => (
                   <Link key={h.id} href="/hospitals" style={{ textDecoration: "none" }}>
                     <div className="card-hover" style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "16px 18px" }}>
@@ -119,7 +127,7 @@ function SearchContent() {
           {results.medicines.length > 0 && (
             <div style={{ marginBottom: 36 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1E1B2E", marginBottom: 14 }}>💊 Medicines ({results.medicines.length})</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
                 {results.medicines.map(m => (
                   <div key={m.id} className="card-hover" style={{ background: "white", border: "1px solid #E5E0FF", borderRadius: 14, padding: "16px 18px" }}>
                     <div style={{ fontWeight: 700, color: "#1E1B2E", marginBottom: 2 }}>{m.brand_name}</div>
