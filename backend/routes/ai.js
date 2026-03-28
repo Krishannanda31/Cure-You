@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Anthropic = require('@anthropic-ai/sdk');
+const Groq = require('groq-sdk');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const SYSTEM_PROMPT = `You are CureYou AI, a helpful health companion for patients in Faridabad, India.
 You help users with:
@@ -25,24 +25,24 @@ Start each response with the most important information first.`;
 router.post('/chat', async (req, res) => {
   const { message, history = [] } = req.body;
   if (!message) return res.status(400).json({ error: 'message required' });
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.json({ reply: 'CureYou AI is not configured yet. Please add your ANTHROPIC_API_KEY to the .env file.' });
+  if (!process.env.GROQ_API_KEY) {
+    return res.json({ reply: 'CureYou AI is not configured yet. Please add your GROQ_API_KEY to Railway environment variables.' });
   }
 
   try {
     const messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
       ...history.map(h => ({ role: h.role, content: h.content })),
       { role: 'user', content: message }
     ];
 
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const response = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
       messages
     });
 
-    res.json({ reply: response.content[0].text });
+    res.json({ reply: response.choices[0].message.content });
   } catch (err) {
     console.error('AI error:', err.message);
     res.status(500).json({ error: 'AI service error', details: err.message });
