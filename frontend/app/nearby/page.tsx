@@ -436,114 +436,94 @@ export default function NearbyPage() {
               </div>
             )}
 
-            {/* Featured Deals Horizontal Scroll */}
-            <div style={{ marginBottom: 28 }}>
-              <div style={{ fontWeight: 800, fontSize: 16, color: "#1E1B2E", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
-                🎉 Featured Offers
-              </div>
-              <div style={{
-                display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8,
-                scrollbarWidth: "none"
-              }}>
-                {FEATURED_OFFERS.map((offer, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      minWidth: 260, width: 260, borderRadius: 16, overflow: "hidden",
-                      flexShrink: 0, background: offer.gradient,
-                      boxShadow: "0 4px 20px rgba(108,63,197,0.15)", cursor: "pointer"
-                    }}
-                  >
-                    <div style={{ padding: "18px 18px 14px" }}>
-                      <div style={{ fontSize: 30, marginBottom: 8 }}>{offer.icon}</div>
-                      <div style={{ fontWeight: 800, color: "white", fontSize: 14, marginBottom: 4 }}>
-                        {offer.name}
-                      </div>
-                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", marginBottom: 12, lineHeight: 1.5 }}>
-                        {offer.offer}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <div>
-                          <span style={{ fontWeight: 900, color: "white", fontSize: 18 }}>{offer.price}</span>
-                          {offer.was && (
-                            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", textDecoration: "line-through", marginLeft: 6 }}>
-                              {offer.was}
-                            </span>
-                          )}
-                        </div>
-                        <button style={{
-                          background: "rgba(255,255,255,0.22)", color: "white",
-                          border: "1.5px solid rgba(255,255,255,0.5)", borderRadius: 10,
-                          padding: "7px 14px", fontWeight: 800, fontSize: 12, cursor: "pointer",
-                          backdropFilter: "blur(4px)"
-                        }}>
-                          Book &amp; Pay
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Filter Tabs */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-              {FILTER_TABS.map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => setTypeFilter(tab.key)}
-                  style={{
-                    padding: "8px 18px", borderRadius: 999,
-                    border: `1.5px solid ${typeFilter === tab.key ? "#6C3FC5" : "#E5E0FF"}`,
-                    background: typeFilter === tab.key ? "#6C3FC5" : "white",
-                    color: typeFilter === tab.key ? "white" : "#6B7280",
-                    fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.15s"
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
             {/* Emergency Card */}
             <div style={{
               background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
-              borderRadius: 16, padding: "18px 22px", marginBottom: 20,
-              display: "flex", alignItems: "center", gap: 16,
-              boxShadow: "0 4px 20px rgba(220,38,38,0.25)"
+              borderRadius: 14, padding: isMobile ? "14px 16px" : "16px 22px", marginBottom: 20,
+              display: "flex", alignItems: "center", gap: 14,
+              boxShadow: "0 4px 20px rgba(220,38,38,0.22)"
             }}>
-              <div style={{ fontSize: 34 }}>🆘</div>
+              <div style={{ fontSize: 28 }}>🆘</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, color: "white", fontSize: 16, marginBottom: 3 }}>
-                  Emergency? Call 108
-                </div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>
-                  Free · 24/7 · All Faridabad
+                <div style={{ fontWeight: 800, color: "white", fontSize: isMobile ? 14 : 15, marginBottom: 2 }}>Emergency? Call 108</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>Free · 24/7 · All Faridabad</div>
+              </div>
+              <a href="tel:108" style={{
+                background: "white", color: "#dc2626", padding: isMobile ? "9px 16px" : "10px 22px",
+                borderRadius: 10, fontWeight: 800, textDecoration: "none",
+                fontSize: 13, whiteSpace: "nowrap", boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+              }}>Call 108</a>
+            </div>
+
+            {/* Section Header + Filter Tabs */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: isMobile ? 16 : 18, color: "#1E1B2E" }}>Services Near You</div>
+                  {!loading && (
+                    <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>
+                      <span style={{ fontWeight: 700, color: "#6C3FC5" }}>{services.length}</span> {typeFilter ? TYPE_LABELS[typeFilter]?.label : "services"} available in Faridabad
+                    </div>
+                  )}
                 </div>
               </div>
-              <a
-                href="tel:108"
-                style={{
-                  background: "white", color: "#dc2626", padding: "11px 22px",
-                  borderRadius: 11, fontWeight: 800, textDecoration: "none",
-                  fontSize: 14, whiteSpace: "nowrap", boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
-                }}
-              >
-                Call 108
-              </a>
+
+              {/* Filter tabs — horizontal scroll */}
+              <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 4 }}>
+                {FILTER_TABS.map(tab => {
+                  const active = typeFilter === tab.key;
+                  const meta = tab.key ? TYPE_LABELS[tab.key] : null;
+                  return (
+                    <button
+                      key={tab.key}
+                      onClick={() => setTypeFilter(tab.key)}
+                      style={{
+                        padding: "9px 18px", borderRadius: 999, flexShrink: 0,
+                        border: "none",
+                        background: active
+                          ? (meta ? meta.color : "#6C3FC5")
+                          : "white",
+                        color: active ? "white" : "#374151",
+                        fontSize: 13, fontWeight: active ? 700 : 500,
+                        cursor: "pointer", transition: "all 0.15s",
+                        boxShadow: active
+                          ? `0 4px 14px ${meta ? meta.color : "#6C3FC5"}44`
+                          : "0 0 0 1.5px #E5E0FF",
+                        display: "flex", alignItems: "center", gap: 6,
+                      }}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Service Cards Grid */}
             {loading ? (
-              <div style={{
-                textAlign: "center", padding: "60px 0", color: "#6B7280",
-                background: "white", borderRadius: 16, border: "1px solid #E5E0FF"
-              }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>⏳</div>
-                <div style={{ fontWeight: 600 }}>Loading services...</div>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(auto-fill, minmax(220px, 1fr))", gap: isMobile ? 10 : 14 }}>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} style={{ background: "white", borderRadius: 16, border: "1px solid #E5E0FF", overflow: "hidden" }}>
+                    <div style={{ height: 110, background: "#F3F0FF" }} />
+                    <div style={{ padding: "12px 14px" }}>
+                      <div style={{ height: 14, background: "#F3F0FF", borderRadius: 4, marginBottom: 8 }} />
+                      <div style={{ height: 11, background: "#F3F0FF", borderRadius: 4, width: "60%", marginBottom: 14 }} />
+                      <div style={{ height: 36, background: "#F3F0FF", borderRadius: 10 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : services.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "60px 20px", background: "white", borderRadius: 16, border: "1px solid #E5E0FF" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: "#1E1B2E", marginBottom: 6 }}>No services found</div>
+                <div style={{ color: "#6B7280", fontSize: 13, marginBottom: 16 }}>Try a different filter</div>
+                <button onClick={() => setTypeFilter("")} style={{ background: "linear-gradient(135deg, #6C3FC5, #818CF8)", color: "white", border: "none", borderRadius: 10, padding: "10px 22px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                  Show All Services
+                </button>
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(220px, 1fr))", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(auto-fill, minmax(220px, 1fr))", gap: isMobile ? 10 : 14 }}>
                 {services.map(s => {
                   const meta = TYPE_LABELS[s.type] || { label: s.type, icon: "📍", color: "#6B7280" };
                   const discount = DISCOUNTS[s.id % DISCOUNTS.length];
@@ -555,115 +535,93 @@ export default function NearbyPage() {
                       className="card-hover"
                       style={{
                         background: "white", border: "1px solid #E5E0FF",
-                        borderRadius: 18, overflow: "hidden", display: "flex",
-                        flexDirection: "column", position: "relative"
+                        borderRadius: 16, overflow: "hidden", display: "flex",
+                        flexDirection: "column", position: "relative",
+                        boxShadow: "0 1px 4px rgba(108,63,197,0.06)",
                       }}
                     >
                       {/* Card image area */}
                       <div style={{
-                        height: 160, position: "relative", flexShrink: 0,
-                        background: `linear-gradient(135deg, ${meta.color}33 0%, ${meta.color}66 100%)`,
-                        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 56
+                        height: isMobile ? 90 : 110, position: "relative", flexShrink: 0,
+                        background: `linear-gradient(135deg, ${meta.color}22 0%, ${meta.color}44 100%)`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: isMobile ? 36 : 44,
                       }}>
                         {meta.icon}
 
                         {/* OPEN 24/7 ribbon */}
                         {s.open_24h ? (
                           <div style={{
-                            position: "absolute", top: 12, left: 0,
-                            background: "#059669", color: "white", fontSize: 10,
-                            fontWeight: 800, padding: "4px 12px 4px 8px",
+                            position: "absolute", top: 8, left: 0,
+                            background: "#059669", color: "white", fontSize: 9,
+                            fontWeight: 800, padding: "3px 10px 3px 6px",
                             borderRadius: "0 999px 999px 0",
-                            boxShadow: "0 2px 6px rgba(5,150,105,0.35)"
-                          }}>
-                            OPEN 24/7
-                          </div>
+                          }}>OPEN 24/7</div>
                         ) : null}
 
                         {/* Discount badge */}
                         <div style={{
-                          position: "absolute", top: 12, right: 12,
+                          position: "absolute", top: 8, right: 8,
                           background: "linear-gradient(135deg, #6C3FC5, #818CF8)",
-                          color: "white", fontSize: 10, fontWeight: 800,
-                          padding: "5px 10px", borderRadius: 8,
-                          boxShadow: "0 2px 8px rgba(108,63,197,0.4)"
-                        }}>
-                          {discount}
-                        </div>
-
-                        {/* Type badge overlay */}
-                        <div style={{
-                          position: "absolute", bottom: 10, left: 12,
-                          background: "rgba(255,255,255,0.92)", backdropFilter: "blur(4px)",
-                          color: meta.color, fontSize: 11, fontWeight: 800,
-                          padding: "4px 10px", borderRadius: 8,
-                          display: "flex", alignItems: "center", gap: 4
-                        }}>
-                          {meta.icon} {meta.label}
-                        </div>
+                          color: "white", fontSize: 9, fontWeight: 800,
+                          padding: "3px 8px", borderRadius: 6,
+                        }}>{discount}</div>
                       </div>
 
                       {/* Card body */}
-                      <div style={{ padding: "14px 16px 16px", flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-                        <div style={{ fontWeight: 800, fontSize: 16, color: "#1E1B2E", lineHeight: 1.3 }}>
+                      <div style={{ padding: isMobile ? "10px 10px 12px" : "12px 14px 14px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+                        {/* Type pill */}
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: `${meta.color}15`, color: meta.color, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, alignSelf: "flex-start" }}>
+                          {meta.icon} {meta.label}
+                        </div>
+
+                        <div style={{ fontWeight: 800, fontSize: isMobile ? 12 : 14, color: "#1E1B2E", lineHeight: 1.3 }}>
                           {s.name}
                         </div>
 
-                        <div style={{ fontSize: 12, color: "#6B7280", display: "flex", alignItems: "center", gap: 4 }}>
+                        <div style={{ fontSize: 11, color: "#6B7280", display: "flex", alignItems: "center", gap: 3 }}>
                           📍 {s.area}
                         </div>
 
                         {/* Rating + distance */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                           {s.rating ? (
-                            <span style={{ fontSize: 13, color: "#1E1B2E", fontWeight: 600, display: "flex", alignItems: "center", gap: 3 }}>
+                            <span style={{ fontSize: 11, background: "#FEF9C3", color: "#92400e", fontWeight: 700, padding: "2px 7px", borderRadius: 6, display: "flex", alignItems: "center", gap: 2 }}>
                               ⭐ {s.rating}
                             </span>
                           ) : null}
                           {s.distance_km ? (
-                            <span style={{ fontSize: 12, color: "#818CF8", fontWeight: 600, display: "flex", alignItems: "center", gap: 3 }}>
-                              📏 ~{s.distance_km} km
+                            <span style={{ fontSize: 11, color: "#818CF8", fontWeight: 600 }}>
+                              ~{s.distance_km} km
                             </span>
                           ) : null}
                         </div>
 
-                        {/* CureYou Pay badge */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <span style={{
-                            background: "rgba(108,63,197,0.08)", color: "#6C3FC5",
-                            fontSize: 10, fontWeight: 800, padding: "3px 9px", borderRadius: 999,
-                            border: "1px solid rgba(108,63,197,0.18)"
-                          }}>
-                            ✓ Accepting CureYou Pay
-                          </span>
-                        </div>
-
                         {/* Action bar */}
-                        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                        <div style={{ display: "flex", gap: 6, marginTop: "auto", paddingTop: 4 }}>
                           {s.phone && (
                             <a
                               href={`tel:${s.phone}`}
                               style={{
                                 flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
-                                gap: 6, border: "1.5px solid #E5E0FF", background: "white",
-                                color: "#6C3FC5", padding: "10px 12px", borderRadius: 11,
-                                fontSize: 13, fontWeight: 700, textDecoration: "none", cursor: "pointer"
+                                gap: 4, border: "1.5px solid #E5E0FF", background: "white",
+                                color: "#6C3FC5", padding: "8px 6px", borderRadius: 9,
+                                fontSize: 12, fontWeight: 700, textDecoration: "none",
                               }}
                             >
-                              📞 Call
+                              📞 {!isMobile && "Call"}
                             </a>
                           )}
                           <button
                             onClick={() => openPayModal(s)}
                             style={{
-                              flex: 2, display: "flex", alignItems: "center", justifyContent: "center",
-                              gap: 6, background: "linear-gradient(135deg, #6C3FC5, #818CF8)",
-                              color: "white", border: "none", padding: "10px 14px",
-                              borderRadius: 11, fontSize: 13, fontWeight: 800, cursor: "pointer",
-                              boxShadow: "0 2px 10px rgba(108,63,197,0.28)"
+                              flex: 2, background: "linear-gradient(135deg, #6C3FC5, #818CF8)",
+                              color: "white", border: "none", padding: "8px 6px",
+                              borderRadius: 9, fontSize: isMobile ? 11 : 12, fontWeight: 800, cursor: "pointer",
+                              boxShadow: "0 2px 8px rgba(108,63,197,0.28)",
                             }}
                           >
-                            {isPayOnly ? "Pay Now" : "Book & Pay"} → <span style={{ fontSize: 11, opacity: 0.85, fontWeight: 600 }}>₹{fee}</span>
+                            {isPayOnly ? "Pay Now" : "Book"} · ₹{fee}
                           </button>
                         </div>
                       </div>
