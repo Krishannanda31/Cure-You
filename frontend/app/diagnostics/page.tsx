@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const API = "https://cure-you-backend-production.up.railway.app/api";
 
